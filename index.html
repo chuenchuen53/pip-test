@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+      integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      video {
+        width: 375px;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body data-bs-theme="dark" class="overflow-x-hidden">
+    <div class="d-flex flex-column g-5 overflow-x-hidden align-items-start">
+      <div>Normal Video</div>
+      <video controls id="video-1">
+        <source
+          src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <br />
+      <div>
+        <button id="toggle-pip-btn1" class="btn btn-primary">toggle 1 pip</button>
+        <button id="change-src-btn" class="btn btn-primary ms-3">change src</button>
+      </div>
+
+      <br />
+      <div>Normal Video</div>
+      <video controls id="video-2">
+        <source
+          src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <br />
+      <button id="toggle-pip-btn2" class="btn btn-primary">toggle 2 pip</button>
+
+      <br />
+      <button id="mute-btn" class="btn btn-primary">Toggle Mute Pip</button>
+
+      <br />
+      <div>iframe Video</div>
+      <iframe
+        id="video-iframe"
+        scrolling="no"
+        src="iframe-1.html"
+        width="375px"
+        height="210px"
+        title="iframe-1"
+        class="border-0"
+      ></iframe>
+      <br />
+      <btn id="toggle-iframe-src-btn" class="btn btn-primary">Toggle iframe src</btn>
+
+      <br />
+      <a href="/other-page.html">go to another page</a>
+    </div>
+  </body>
+
+  <script>
+    const videoSrc = [
+      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    ];
+
+    const iframeSrc = ["iframe-1.html", "iframe-2.html"];
+
+    function togglePictureInPicture(video) {
+      if (document.pictureInPictureElement) {
+        if (video === document.pictureInPictureElement) {
+          document.exitPictureInPicture();
+        } else {
+          video.requestPictureInPicture();
+        }
+      } else if (document.pictureInPictureEnabled) {
+        video.requestPictureInPicture();
+      }
+    }
+
+    window.onload = function () {
+      $video1 = $("#video-1");
+      $video2 = $("#video-2");
+      $videoIframe = $("#video-iframe");
+      $videoTogglePipBtn1 = $("#toggle-pip-btn1");
+      $videoTogglePipBtn2 = $("#toggle-pip-btn2");
+      $changeSrcBtn = $("#change-src-btn");
+      $muteBtn = $("#mute-btn");
+      $toggleIframeSrcBtn = $("#toggle-iframe-src-btn");
+
+      $videoTogglePipBtn1.click(() => togglePictureInPicture($video1[0]));
+      $videoTogglePipBtn2.click(() => togglePictureInPicture($video2[0]));
+
+      $changeSrcBtn.click(() => {
+        const isPlaying = !$video1[0].paused;
+        $video1.attr("src", videoSrc[Math.floor(Math.random() * videoSrc.length)]);
+        // if playing video, autoplay after changing src
+        if (isPlaying) {
+          $video1[0].play();
+        }
+      });
+
+      $muteBtn.click(() => {
+        if (document.pictureInPictureElement) {
+          document.pictureInPictureElement.muted = !document.pictureInPictureElement.muted;
+        }
+      });
+
+      $toggleIframeSrcBtn.click(() => {
+        const isPlaying = !$videoIframe[0].paused;
+        const currentSrc = $videoIframe.attr("src");
+        const newSrc = currentSrc === iframeSrc[0] ? iframeSrc[1] : iframeSrc[0];
+        $videoIframe.attr("src", newSrc);
+      });
+    };
+  </script>
+</html>
